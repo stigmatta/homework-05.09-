@@ -35,6 +35,30 @@ void showInfo()
 	}
 	
 }
+void addWorker()
+{
+	if (workerCounter < MAXSIZE)
+	{
+		cout << "Введите информацию о вашем сотрудгике" << endl;
+		cout << "Имя: ";
+		cin >> workbook[workerCounter].name;
+		cout << endl;
+		cout << "Фамилия: " ;
+		cin >> workbook[workerCounter].surname;
+		cout << endl;
+		cout << "Номер телефона: ";
+		cin >> workbook[workerCounter].phoneNumber;
+		cout << endl;
+		cout << "Зарплата:";
+		cin >> workbook[workerCounter].salary;
+		cout << endl;
+	}
+	else
+	{
+		cout << "Ваша книга с работниками переполнена. Вы не можете добавить сотрудника" << endl;
+	}
+	
+}
 int main()
 {
 	setlocale(LC_ALL, "");
