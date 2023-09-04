@@ -59,6 +59,27 @@ void addWorker()
 	}
 	
 }
+void searchBySurname()
+{
+	if (workerCounter < 1)
+	{
+		cout << "В книге пока нет работников" << endl;
+		return;
+	}
+	else
+	{
+		char* userSurname = new char[MAXSIZE];
+		cout << "Введите искомую фамилию:";
+		cin >> userSurname;
+		for (int i = 0; i < workerCounter; i++)
+		{
+			if (strcmp(userSurname, workbook[i].surname) == 0)
+				cout << workbook[i].surname << endl;
+		}
+	}
+	
+
+}
 int main()
 {
 	setlocale(LC_ALL, "");
