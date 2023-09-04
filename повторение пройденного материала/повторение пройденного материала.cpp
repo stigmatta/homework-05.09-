@@ -6,6 +6,7 @@
 using namespace std;
 const int MAXSIZE = 50;
 const int NUMSIZE = 10;
+bool flag = 0;
 int workerCounter = 0; //количество уже добавленных сотрудников
 struct Worker
 {
@@ -15,24 +16,13 @@ struct Worker
 	double salary;
 };
 Worker* workbook = new Worker[MAXSIZE]; //максимальное количество работников в книге пускай будет 50
-void showInfo()
+void showInfo(Worker worker)
 {
-	if (workerCounter < 1)
-	{
-		cout << "В книге пока нет работников" << endl;
-		return;
-	}
-	else
-	{
-		for (int i = 0; i < workerCounter; i++)
-		{
-			cout << "Сотрудник № " << i+1 << endl;
-			cout << "Имя: " << workbook[i].name << endl;
-			cout << "Фамилия: " << workbook[i ].surname << endl;
-			cout << "Номер телефона: " << workbook[i].phoneNumber << endl;
-			cout << "Зарплата: " << workbook[i].salary << endl;
-		}
-	}
+	
+	cout << "Имя: " << worker.name << endl;
+	cout << "Фамилия: " << worker.surname << endl;
+	cout << "Номер телефона: " << worker.phoneNumber << endl;
+	cout << "Зарплата: " << worker.salary << endl;
 
 }
 bool correctNumber(char* phoneNum)
@@ -43,6 +33,21 @@ bool correctNumber(char* phoneNum)
 		return false;
 	}
 	return true;
+}
+void salaryDiapason(Worker worker,int left,int right)
+{
+	if (workerCounter < 1)
+	{
+		cout << "В книге пока нет работников" << endl;
+		return;
+	}
+	if (worker.salary >= left && worker.salary <= right)
+	{
+		flag = 1;
+		showInfo(worker);
+
+	}
+
 }
 void addWorker()
 {
@@ -85,21 +90,64 @@ void searchBySurname()
 		for (int i = 0; i < workerCounter; i++)
 		{
 			if (strcmp(userSurname, workbook[i].surname) == 0)
-				cout << workbook[i].surname << endl;
+				showInfo(workbook[i]);
 		}
 	}
 
 
 }
+void sortBySurname()
+{
+	for (int i = 0; i < workerCounter; i++)
+	{
+		for (int j = workerCounter-1; j>i; j--)
+		{
+			if (strcmp(workbook[i].surname, workbook[j].surname) == 1)
+				swap(workbook[j], workbook[j-1]);
+		}
+	}
+}
+Worker* deleteWorker()
+{
+	int index;
+	if (workerCounter < 1)
+		cout << "Вы не можете удалить сотрудника" << endl;
+	else
+	{
+		cout << "Сотрудника с каким номером вы хотите удалить из книги?" << endl;
+		do {
+			cin >> index;
+			if (index > 0 && index < workerCounter)
+				cout << "Сотрудника с таким номером нет" << endl;
+		} while (index > 0 && index < workerCounter);
+		workerCounter--;
+		Worker* newBook = new Worker[workerCounter];
+		for (int i = 0; i < workerCounter; i++)
+		{
+			if (i < index - 1)
+				newBook[i] = workbook[i];
+			else if (i == index - 1)
+				continue;
+			else
+				newBook[i] = workbook[i + 1];
+			delete[]workbook;
+			return newBook;
+		}
+	}
+}
 int main()
 {
 	setlocale(LC_ALL, "");
 	unsigned short choice;
+	int left, right;
 	do
 	{
 		cout << "1 - Добавление сотрудника в книгу всех рабочих" << endl;
 		cout << "2 - Вывод книги рабочих на экран" << endl;
 		cout << "3 - Поиск сотрудников в рабочей книге по фамилии" << endl;
+		cout << "4 - Поиск по диапазону зарплаты:" << endl;
+		cout << "5 - Сортировать по фамилии" << endl;
+		cout << "6 - Удаление сотрудника из книги" << endl;
 		cout << "0 - закончить программу" << endl;
 		cin >> choice;
 		switch (choice)
@@ -109,10 +157,40 @@ int main()
 			workerCounter++;
 			break;
 		case 2:
-			showInfo();
+			if (workerCounter < 1)
+			{
+				cout << "В книге пока нет работников" << endl;
+				break;
+			}
+			else
+			{
+				for (int i = 0; i < workerCounter; i++)
+				{
+					cout << "Сотрудник № " << i + 1 << endl;
+					showInfo(workbook[i]);
+				}
+			}
 			break;
 		case 3:
 			searchBySurname();
+			break;
+		case 4:
+			cout << "Введите первую границу диапазона зарплаты:" << endl;
+			cin >> left;
+			cout << "Введите вторую границу диапазона зарплаты:" << endl;
+			cin >> right;
+			for (int i = 0; i < workerCounter; i++)
+			{
+				salaryDiapason(workbook[i],left,right);
+			}
+			if (!flag)
+			{
+				cout << "В книге нет работников с таким диапазном зарплаты" << endl;
+			}
+			flag = 0;
+			break;
+		case 5:
+			sortBySurname();
 			break;
 		}
 	} while (choice != 0);
