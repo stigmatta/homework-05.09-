@@ -3,9 +3,41 @@
 
 #include <iostream>
 using namespace std;
+const int MAXSIZE = 50;
+const int NUMSIZE = 10;
+int workerCounter = 0; //количество уже добавленных сотрудников
+struct Worker
+{
+	char* name = new char[MAXSIZE];
+	char* surname = new char[MAXSIZE];
+	char* phoneNumber = new char[NUMSIZE];
+	double salary;
+};
+Worker* workbook = new Worker[MAXSIZE]; //максимальное количество работников в книге пускай будет 50
+void showInfo()
+{
+	if (workerCounter < 1)
+	{
+		cout << "В книге пока нет работников" << endl;
+		return;
+	}
+	else 
+	{ 
+		for (int i = 1; i < workerCounter; i++)
+		{
+			cout << "Сотрудник № " << i << endl;
+			cout << "Имя: " << workbook[i - 1].name << endl;
+			cout << "Фамилия: " << workbook[i - 1].surname << endl;
+			cout << "Номер телефона: " << workbook[i - 1].phoneNumber << endl;
+			cout << "Зарплата: " << workbook[i - 1].salary << endl;
+		}
+		return;
+	}
+	
+}
 int main()
 {
-
+	setlocale(LC_ALL, "");
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
