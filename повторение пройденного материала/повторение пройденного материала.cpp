@@ -2,6 +2,7 @@
 //
 
 #include <iostream>
+#include <cstring>
 using namespace std;
 const int MAXSIZE = 50;
 const int NUMSIZE = 10;
@@ -21,23 +22,22 @@ void showInfo()
 		cout << "В книге пока нет работников" << endl;
 		return;
 	}
-	else 
-	{ 
-		for (int i = 1; i < workerCounter; i++)
+	else
+	{
+		for (int i = 0; i < workerCounter; i++)
 		{
-			cout << "Сотрудник № " << i << endl;
-			cout << "Имя: " << workbook[i - 1].name << endl;
-			cout << "Фамилия: " << workbook[i - 1].surname << endl;
-			cout << "Номер телефона: " << workbook[i - 1].phoneNumber << endl;
-			cout << "Зарплата: " << workbook[i - 1].salary << endl;
+			cout << "Сотрудник № " << i+1 << endl;
+			cout << "Имя: " << workbook[i].name << endl;
+			cout << "Фамилия: " << workbook[i ].surname << endl;
+			cout << "Номер телефона: " << workbook[i].phoneNumber << endl;
+			cout << "Зарплата: " << workbook[i].salary << endl;
 		}
-		return;
 	}
-	
+
 }
 bool correctNumber(char* phoneNum)
 {
-	if (strlen(phoneNum)!=10)
+	if (strlen(phoneNum) != 10)
 	{
 		cout << "Вы ввели некорректный номер.Попробуйте еще раз" << endl;
 		return false;
@@ -52,7 +52,7 @@ void addWorker()
 		cout << "Имя: ";
 		cin >> workbook[workerCounter].name;
 		cout << endl;
-		cout << "Фамилия: " ;
+		cout << "Фамилия: ";
 		cin >> workbook[workerCounter].surname;
 		cout << endl;
 		cout << "Номер телефона: ";
@@ -68,7 +68,7 @@ void addWorker()
 	{
 		cout << "Ваша книга с работниками переполнена. Вы не можете добавить сотрудника" << endl;
 	}
-	
+
 }
 void searchBySurname()
 {
@@ -88,29 +88,35 @@ void searchBySurname()
 				cout << workbook[i].surname << endl;
 		}
 	}
-	
+
 
 }
 int main()
 {
 	setlocale(LC_ALL, "");
 	unsigned short choice;
-	cout << "1 - Добавление сотрудника в книгу всех рабочих" << endl;
-	cout << "2 - Вывод книги рабочих на экран" << endl;
-	cout << "3 - Поиск сотрудников в рабочей книге по фамилии" << endl;
-	cin >> choice;
-	switch (choice)
+	do
 	{
-	case 1:
-		addWorker();
-		break;
-	case 2:
-		showInfo();
-		break;
-	case 3:
-		searchBySurname();
-		break;
-	}
+		cout << "1 - Добавление сотрудника в книгу всех рабочих" << endl;
+		cout << "2 - Вывод книги рабочих на экран" << endl;
+		cout << "3 - Поиск сотрудников в рабочей книге по фамилии" << endl;
+		cout << "0 - закончить программу" << endl;
+		cin >> choice;
+		switch (choice)
+		{
+		case 1:
+			addWorker();
+			workerCounter++;
+			break;
+		case 2:
+			showInfo();
+			break;
+		case 3:
+			searchBySurname();
+			break;
+		}
+	} while (choice != 0);
+	return 0;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
