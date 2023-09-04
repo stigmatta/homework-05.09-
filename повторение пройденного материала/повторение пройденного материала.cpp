@@ -35,6 +35,15 @@ void showInfo()
 	}
 	
 }
+bool correctNumber(char* phoneNum)
+{
+	if (strlen(phoneNum)!=10)
+	{
+		cout << "Вы ввели некорректный номер.Попробуйте еще раз" << endl;
+		return false;
+	}
+	return true;
+}
 void addWorker()
 {
 	if (workerCounter < MAXSIZE)
@@ -47,7 +56,9 @@ void addWorker()
 		cin >> workbook[workerCounter].surname;
 		cout << endl;
 		cout << "Номер телефона: ";
-		cin >> workbook[workerCounter].phoneNumber;
+		do {
+			cin >> workbook[workerCounter].phoneNumber;
+		} while (correctNumber(workbook[workerCounter].phoneNumber) == 0);
 		cout << endl;
 		cout << "Зарплата:";
 		cin >> workbook[workerCounter].salary;
@@ -83,6 +94,23 @@ void searchBySurname()
 int main()
 {
 	setlocale(LC_ALL, "");
+	unsigned short choice;
+	cout << "1 - Добавление сотрудника в книгу всех рабочих" << endl;
+	cout << "2 - Вывод книги рабочих на экран" << endl;
+	cout << "3 - Поиск сотрудников в рабочей книге по фамилии" << endl;
+	cin >> choice;
+	switch (choice)
+	{
+	case 1:
+		addWorker();
+		break;
+	case 2:
+		showInfo();
+		break;
+	case 3:
+		searchBySurname();
+		break;
+	}
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
