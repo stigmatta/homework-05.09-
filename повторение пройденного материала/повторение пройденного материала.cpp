@@ -3,142 +3,15 @@
 
 #include <iostream>
 #include <cstring>
+#include "Header.h"
 using namespace std;
-const int MAXSIZE = 50;
-const int NUMSIZE = 10;
-bool flag = 0;
-int workerCounter = 0; //количество уже добавленных сотрудников
-struct Worker
-{
-	char* name = new char[MAXSIZE];
-	char* surname = new char[MAXSIZE];
-	char* phoneNumber = new char[NUMSIZE];
-	double salary;
-};
-Worker* workbook = new Worker[MAXSIZE]; //максимальное количество работников в книге пускай будет 50
-void showInfo(Worker worker)
-{
-	
-	cout << "Имя: " << worker.name << endl;
-	cout << "Фамилия: " << worker.surname << endl;
-	cout << "Номер телефона: " << worker.phoneNumber << endl;
-	cout << "Зарплата: " << worker.salary << endl;
 
-}
-bool correctNumber(char* phoneNum)
-{
-	if (strlen(phoneNum) != 10)
-	{
-		cout << "Вы ввели некорректный номер.Попробуйте еще раз" << endl;
-		return false;
-	}
-	return true;
-}
-void salaryDiapason(Worker worker,int left,int right)
-{
-	if (workerCounter < 1)
-	{
-		cout << "В книге пока нет работников" << endl;
-		return;
-	}
-	if (worker.salary >= left && worker.salary <= right)
-	{
-		flag = 1;
-		showInfo(worker);
-
-	}
-
-}
-void addWorker()
-{
-	if (workerCounter < MAXSIZE)
-	{
-		cout << "Введите информацию о вашем сотрудгике" << endl;
-		cout << "Имя: ";
-		cin >> workbook[workerCounter].name;
-		cout << endl;
-		cout << "Фамилия: ";
-		cin >> workbook[workerCounter].surname;
-		cout << endl;
-		cout << "Номер телефона: ";
-		do {
-			cin >> workbook[workerCounter].phoneNumber;
-		} while (correctNumber(workbook[workerCounter].phoneNumber) == 0);
-		cout << endl;
-		cout << "Зарплата:";
-		cin >> workbook[workerCounter].salary;
-		cout << endl;
-	}
-	else
-	{
-		cout << "Ваша книга с работниками переполнена. Вы не можете добавить сотрудника" << endl;
-	}
-
-}
-void searchBySurname()
-{
-	if (workerCounter < 1)
-	{
-		cout << "В книге пока нет работников" << endl;
-		return;
-	}
-	else
-	{
-		char* userSurname = new char[MAXSIZE];
-		cout << "Введите искомую фамилию:";
-		cin >> userSurname;
-		for (int i = 0; i < workerCounter; i++)
-		{
-			if (strcmp(userSurname, workbook[i].surname) == 0)
-				showInfo(workbook[i]);
-		}
-	}
-
-
-}
-void sortBySurname()
-{
-	for (int i = 0; i < workerCounter; i++)
-	{
-		for (int j = workerCounter-1; j>i; j--)
-		{
-			if (strcmp(workbook[i].surname, workbook[j].surname) == 1)
-				swap(workbook[j], workbook[j-1]);
-		}
-	}
-}
-Worker* deleteWorker()
-{
-	int index;
-	if (workerCounter < 1)
-		cout << "Вы не можете удалить сотрудника" << endl;
-	else
-	{
-		cout << "Сотрудника с каким номером вы хотите удалить из книги?" << endl;
-		do {
-			cin >> index;
-			if (index > 0 && index < workerCounter)
-				cout << "Сотрудника с таким номером нет" << endl;
-		} while (index > 0 && index < workerCounter);
-		workerCounter--;
-		Worker* newBook = new Worker[workerCounter];
-		for (int i = 0; i < workerCounter; i++)
-		{
-			if (i < index - 1)
-				newBook[i] = workbook[i];
-			else if (i == index - 1)
-				continue;
-			else
-				newBook[i] = workbook[i + 1];
-			delete[]workbook;
-			return newBook;
-		}
-	}
-}
 int main()
 {
 	setlocale(LC_ALL, "");
+
 	unsigned short choice;
+	char path[MAXSIZE];
 	int left, right;
 	do
 	{
@@ -153,8 +26,9 @@ int main()
 		switch (choice)
 		{
 		case 1:
-			addWorker();
-			workerCounter++;
+			cout << "Type a path of your folder (for example: D:\\...)" << endl;
+			cin >> path;
+			addWorker(path);
 			break;
 		case 2:
 			if (workerCounter < 1)
@@ -192,11 +66,150 @@ int main()
 		case 5:
 			sortBySurname();
 			break;
+		case 6:
+			workbook = deleteWorker();
+			break;
 		}
 	} while (choice != 0);
 	return 0;
 }
+void showInfo(Worker worker)
+{
 
+	cout << "Имя: " << worker.name << endl;
+	cout << "Фамилия: " << worker.surname << endl;
+	cout << "Номер телефона: " << worker.phoneNumber << endl;
+	cout << "Зарплата: " << worker.salary << endl;
+
+}
+void readFile(const char* path)
+{
+	FILE* file = fopen(path, "r");
+	const int SIZE = 1000;
+	char buffer[SIZE];
+	while (fgets(buffer, SIZE, file) != NULL)
+		cout << buffer;
+	fclose(file);
+}
+bool correctNumber(char* phoneNum)
+{
+	if (strlen(phoneNum) != 10)
+	{
+		cout << "Вы ввели некорректный номер.Попробуйте еще раз" << endl;
+		return false;
+	}
+	return true;
+}
+void salaryDiapason(Worker worker, int left, int right)
+{
+	if (workerCounter < 1)
+	{
+		cout << "В книге пока нет работников" << endl;
+		return;
+	}
+	if (worker.salary >= left && worker.salary <= right)
+	{
+		flag = 1;
+		showInfo(worker);
+
+	}
+
+}
+void addWorker(char path[])
+{
+	if (workerCounter < MAXSIZE)
+	{
+		FILE* file = fopen(path, "a");
+		cout << "Введите информацию о вашем сотруднике" << endl;
+		cout << "Имя: ";
+		cin >> workbook[workerCounter].name;
+		cout << endl;
+		cout << "Фамилия: ";
+		cin >> workbook[workerCounter].surname;
+		cout << endl;
+		cout << "Номер телефона: ";
+		do {
+			cin >> workbook[workerCounter].phoneNumber;
+		} while (correctNumber(workbook[workerCounter].phoneNumber) == 0);
+		cout << endl;
+		cout << "Зарплата:";
+		cin >> workbook[workerCounter].salary;
+		cout << endl;
+		++workerCounter;
+		fprintf_s(file, "Имя: %s\n", workbook[workerCounter].name);
+		fprintf_s(file, "Фамилия: %s\n", workbook[workerCounter].surname);
+		fprintf_s(file, "Номер телефона: %s\n", workbook[workerCounter].phoneNumber);
+		fprintf_s(file, "Зарплата: %f\n", workbook[workerCounter].salary);
+		fclose(file);
+
+	}
+	else
+	{
+		cout << "Ваша книга с работниками переполнена. Вы не можете добавить сотрудника" << endl;
+	}
+
+}
+void searchBySurname()
+{
+	if (workerCounter < 1)
+	{
+		cout << "В книге пока нет работников" << endl;
+		return;
+	}
+	else
+	{
+		char* userSurname = new char[MAXSIZE];
+		cout << "Введите искомую фамилию:";
+		cin >> userSurname;
+		for (int i = 0; i < workerCounter; i++)
+		{
+			if (strcmp(userSurname, workbook[i].surname) == 0)
+				showInfo(workbook[i]);
+		}
+	}
+
+
+}
+void sortBySurname()
+{
+	for (int i = 0; i < workerCounter; i++)
+	{
+		for (int j = workerCounter - 1; j > i; j--)
+		{
+			if (strcmp(workbook[i].surname, workbook[j].surname) == 1)
+				swap(workbook[j], workbook[j - 1]);
+		}
+	}
+}
+Worker* deleteWorker()
+{
+	int index;
+	if (workerCounter < 1)
+		cout << "Вы не можете удалить сотрудника" << endl;
+	else
+	{
+		cout << "Сотрудника с каким номером вы хотите удалить из книги?" << endl;
+		do {
+			cin >> index;
+			if (!(index > 0 && index < workerCounter))
+				cout << "Сотрудника с таким номером нет" << endl;
+		} while (!(index > 0 && index < workerCounter));
+		--workerCounter;
+		Worker* newBook = new Worker[workerCounter];
+		for (int i = 0; i < workerCounter + 1; i++)
+		{
+			if (i < index - 1)
+				newBook[i] = workbook[i];
+			else if (i == index - 1)
+				continue;
+			else
+				newBook[i - 1] = workbook[i];
+			delete[]workbook;
+			return newBook;
+		}
+
+	}
+}
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu
 
